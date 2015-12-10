@@ -37,7 +37,7 @@ webDB.connect = function (database, title, size) {
 
 webDB.setupTables = function () {
   html5sql.process(
-    'TODO: Add SQL here',
+    'CREATE TABLE IF NOT EXISTS articles (id INTEGER PRIMARY KEY, title VARCHAR(255) NOT NULL, category VARCHAR(255) NOT NULL, author VARCHAR(255) NOT NULL, authorUrl VARCHAR(255), publishedOn DATETIME, body TEXT);',
     function() {
       // on success
       console.log('Success setting up tables.');
