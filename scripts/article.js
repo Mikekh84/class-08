@@ -28,7 +28,13 @@ Article.prototype.toHtml = function() {
 Article.prototype.insertRecord = function(callback) {
   // insert article record into database
   webDB.execute(
-    // TODO: Add SQL here...
+    [
+      {
+        'sql' : 'INSERT INTO articles (author, title ) VALUES(?, ?)',
+        'data' : [this.author , this.title]
+      },
+
+    ]
     ,
     callback
   );
@@ -37,8 +43,12 @@ Article.prototype.insertRecord = function(callback) {
 Article.prototype.updateRecord = function(callback) {
   //update article record in databse
   webDB.execute(
-    // TODO: Add SQL here...
-    ,
+    [
+      {
+        'sql': 'UPDATE articles SET title = ?, author = ?, authorUrl = ?, category = ?, publishedOn = ?, markdown = ? WHERE id = ?;',
+       'data': [this.title, this.author, this.authorUrl, this.category, this.publishedOn, this.markdown, this.id]
+      }
+    ],
     callback
   );
 };
@@ -46,8 +56,12 @@ Article.prototype.updateRecord = function(callback) {
 Article.prototype.deleteRecord = function(callback) {
   // Delete article record in database
   webDB.execute(
-    // TODO: Add SQL here...
-    ,
+    [
+      {
+        'sql': 'DELETE FROM articles WHERE id = ?;',
+        'data': [this.id]
+      }
+    ],
     callback
   );
 };
@@ -55,8 +69,11 @@ Article.prototype.deleteRecord = function(callback) {
 Article.prototype.truncateTable = function(callback) {
   // Delete all records from given table.
   webDB.execute(
-    // TODO: Add SQL here...
-    ,
+    [
+      {
+        'sql': 'DELETE FROM articles'
+      }
+    ],
     callback
   );
 };
