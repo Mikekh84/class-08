@@ -6,7 +6,7 @@ blog.loadArticles = function() {
     Article.prototype.template = Handlebars.compile(data);
     $.ajax({
       type: 'HEAD',
-      url: 'scripts/blogArticles.json',
+      url: 'scripts/hackerIpsum.json',
       success: blog.fetchArticles
     });
   });
@@ -21,7 +21,7 @@ blog.fetchArticles = function(data, message, xhr) {
     // Remove all prior articles from the DB, and from blog:
     blog.articles = [];
     webDB.execute(
-      // TODO: Add SQL here...
+        'DELTE FROM articles;'
       , blog.fetchJSON);
   } else {
     console.log('cache hit!');
@@ -30,7 +30,7 @@ blog.fetchArticles = function(data, message, xhr) {
 };
 
 blog.fetchJSON = function() {
-  $.getJSON('scripts/blogArticles.json', blog.updateFromJSON);
+  $.getJSON('scripts/hackerIpsum.json', blog.updateFromJSON);
 };
 
 // Drop old records and insert new into db and blog object:
@@ -45,16 +45,17 @@ blog.updateFromJSON = function (data) {
 
     // Cache the article in DB
     // TODO: Trigger SQL here...
+    //
+    article.insertRecord();
   });
   blog.initArticles();
 };
 
 blog.fetchFromDB = function(callback) {
   callback = callback || function() {};
-
   // Fetch all articles from db.
   webDB.execute(
-    // TODO: Add SQL here...
+    'SELECT * FROM articles ORDER BY publishedOn DESC;'
     ,
     function (resultArray) {
       resultArray.forEach(function(ele) {
@@ -87,8 +88,12 @@ blog.render = function() {
 
   // Get all articles from the DB to render:
   webDB.execute(
-    // TODO: Add SQL here...
-    , function(results) {
+    [
+      {
+        'sql': 'SELECT ALL FROM articles',
+      }
+    ],
+     function(results) {
     results.forEach(function(ele) { blog.appendArticle(ele); });
   });
 
@@ -218,7 +223,7 @@ blog.checkForEditArticle = function () {
 blog.loadArticleById = function (id) {
   // Grab just the one article from the DB
   webDB.execute(
-    // TODO: Add SQL here...
+    'SELECT id FROM articles WHERE id = ?'
     ,
     function (resultArray) {
       if (resultArray.length === 1) {
@@ -296,7 +301,7 @@ blog.handleAddButton = function () {
   $('#add-article-btn').on('click', function (e) {
     var article = blog.buildArticle()
     // Insert this new record into the DB, then callback to blog.clearAndFetch
-    // TODO: Trigger SQL here...
+
 
   });
 };
@@ -319,7 +324,7 @@ blog.handleDeleteButton = function () {
     var id = $(this).data('article-id');
     // Remove this record from the DB:
     webDB.execute(
-      // TODO: Add SQL here...
+      'DELTE FROM articles WHERE id = ?;'
       , blog.clearAndFetch);
     blog.clearNewForm();
   });
